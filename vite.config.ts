@@ -4,6 +4,7 @@ import svgr from 'vite-plugin-svgr';
 import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
+  base: '/smart-home-automation/',
   plugins: [
     react(),
     svgr({
