@@ -1,0 +1,153 @@
+/* Print-specific styles */
+@media print {
+  /* Hide navigation and non-essential elements */
+  header,
+  nav,
+  .no-print,
+  button,
+  [role="tablist"],
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Show the active tab content - only the one without hidden attribute */
+  [role="tabpanel"]:not([hidden]) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    overflow: visible !important;
+    position: relative !important;
+  }
+
+  /* Ensure hidden tabs stay hidden */
+  [role="tabpanel"][hidden] {
+    display: none !important;
+  }
+
+  /* Optimize page layout for printing */
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+
+  /* Ensure main content is visible */
+  main,
+  .container {
+    display: block !important;
+    visibility: visible !important;
+    max-width: 100% !important;
+    padding: 0.5cm !important;
+  }
+
+  /* Ensure content fits on page */
+  .print-content {
+    page-break-inside: avoid;
+  }
+
+  /* Page break utilities */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid;
+  }
+
+  /* Remove shadows and borders for cleaner print */
+  .card,
+  .shadow,
+  [class*="Card"] {
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Optimize table printing */
+  table {
+    page-break-inside: auto;
+    border-collapse: collapse;
+    width: 100% !important;
+    display: table !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tbody {
+    display: table-row-group !important;
+  }
+
+  /* Ensure all content is visible */
+  * {
+    overflow: visible !important;
+  }
+
+  /* Ensure colors are printed */
+  .text-green-600,
+  .text-red-600,
+  .bg-gray-100,
+  .bg-gray-50,
+  .bg-muted {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Improve spacing for print */
+  .space-y-6 > * + * {
+    margin-top: 1.5rem !important;
+  }
+
+  .space-y-4 > * + * {
+    margin-top: 1rem !important;
+  }
+
+  /* Ensure text is visible */
+  .text-foreground,
+  .text-muted-foreground,
+  p, span, div, h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+  }
+
+  /* Make sure backgrounds are visible */
+  .bg-card,
+  .bg-background {
+    background: white !important;
+  }
+
+  /* Ensure grid and flex layouts work in print */
+  .grid {
+    display: grid !important;
+  }
+
+  .flex {
+    display: flex !important;
+  }
+
+  /* Make sure space-y classes work */
+  .space-y-6,
+  .space-y-4,
+  .space-y-2 {
+    display: block !important;
+  }
+}

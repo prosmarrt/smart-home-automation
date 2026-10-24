@@ -1,0 +1,2 @@
+ALTER TABLE device_prices ADD COLUMN cost_price numeric NOT NULL DEFAULT 0;
+COMMENT ON COLUMN device_prices.cost_price IS 'Purchase / procurement cost price (admin-only, used for margin calculations)';

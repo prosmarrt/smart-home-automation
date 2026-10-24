@@ -1,0 +1,1 @@
+ALTER TABLE quotation_versions ADD COLUMN last_amendment_date TIMESTAMP WITH TIME ZONE;
