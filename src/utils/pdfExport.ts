@@ -415,7 +415,9 @@ export async function exportToPDF({
   warrantyEndDate = null,
   includeSmartSystemsLogo = true,
   isInvoice = false,
-  categoryLabels = {}
+  categoryLabels = {},
+  openInNewTab = false,
+  targetWindow = null,
 }: PDFExportOptions) {
   const doc = new jsPDF();
   
