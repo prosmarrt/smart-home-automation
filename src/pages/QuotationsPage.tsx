@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { quotationsApi, quotationStatusAuditApi } from '@/db/api';
+import { quotationsApi, quotationStatusAuditApi, paymentsApi } from '@/db/api';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,8 @@ import QuotationsAnalyticsTab, { StatusBadge } from '@/components/smart-home/Quo
 import ExpensesTab from '@/components/smart-home/ExpensesTab';
 import { PipelineWarningBanner, needsPipelineConfirmation } from '@/components/smart-home/PipelineWarningBanner';
 import { isAdmin as checkIsAdmin } from '@/db/api';
+import { exportToPDF } from '@/utils/pdfExportLazy';
+import { useCategoryLabels } from '@/hooks/useCategoryLabels';
 
 const ALL_STATUSES: QuotationStatus[] = ['Draft', 'Approved', 'Pipeline', 'Declined', 'Invoiced', 'Partially Paid', 'Fully Paid'];
 
@@ -64,6 +66,7 @@ export default function QuotationsPage() {
 
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { labels: categoryLabels } = useCategoryLabels();
 
   // Check admin once on mount
   useEffect(() => { checkIsAdmin().then(setIsAdminUser).catch(() => {}); }, []);
@@ -78,6 +81,57 @@ export default function QuotationsPage() {
       toast({ title: 'Error', description: 'Failed to load quotations', variant: 'destructive' });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleViewInvoicePDF = async (quotation: Quotation) => {
+    try {
+      const [fullQuotation, payments] = await Promise.all([
+        quotationsApi.getById(quotation.id),
+        paymentsApi.getByQuotationId(quotation.id),
+      ]);
+
+      if (!fullQuotation) {
+        throw new Error('Quotation not found');
+      }
+
+      await exportToPDF({
+        devices: fullQuotation.devices_data as any[],
+        rooms: fullQuotation.rooms_data as any[],
+        clientInfo: {
+          id: fullQuotation.id,
+          client_name: fullQuotation.client_name || '',
+          address: fullQuotation.client_address,
+          phone_number: fullQuotation.client_phone,
+          project_code: fullQuotation.project_code,
+          last_amendment_date: fullQuotation.last_amendment_date,
+          created_at: fullQuotation.created_at,
+          updated_at: fullQuotation.updated_at,
+        },
+        commissioningFee: fullQuotation.commissioning_price,
+        visitFee: fullQuotation.visit_price,
+        installationFee: fullQuotation.installation_price,
+        vatPercentage: fullQuotation.vat_percentage,
+        discountType: fullQuotation.discount_type as any,
+        discountValue: fullQuotation.discount_value,
+        currentVersion: fullQuotation.current_version,
+        totalPaid: fullQuotation.total_paid,
+        remainingBalance: fullQuotation.remaining_balance,
+        payments,
+        approvalDate: fullQuotation.approval_date,
+        warrantyStartDate: fullQuotation.warranty_start_date,
+        warrantyEndDate: fullQuotation.warranty_end_date,
+        isInvoice: true,
+        categoryLabels,
+        openInNewTab: true,
+      });
+    } catch (error) {
+      console.error('[InvoicePDF] Failed:', error);
+      toast({
+        title: 'PDF failed',
+        description: 'Failed to open invoice PDF.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -500,6 +554,7 @@ export default function QuotationsPage() {
                         )}
                       </span>
 
+                      {!quotation.is_invoice && (
                       <Popover
                         open={editingId === quotation.id}
                         onOpenChange={(open) => { if (!open) closeEdit(); }}
@@ -559,6 +614,7 @@ export default function QuotationsPage() {
                           </div>
                         </PopoverContent>
                       </Popover>
+                      )}
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
@@ -575,11 +631,13 @@ export default function QuotationsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => navigate(`/quotation/${quotation.id}`)}
+                      onClick={() => quotation.is_invoice
+                        ? handleViewInvoicePDF(quotation)
+                        : navigate(`/quotation/${quotation.id}`)}
                       className="flex-1 sm:flex-none"
                     >
                       <Eye className="h-4 w-4 mr-2" />
-                      View
+                      {quotation.is_invoice ? 'View PDF' : 'View'}
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>

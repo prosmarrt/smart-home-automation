@@ -21,6 +21,7 @@ interface PDFExportOptions {
   includeSmartSystemsLogo?: boolean;
   isInvoice?: boolean;
   categoryLabels?: Record<string, string>;
+  openInNewTab?: boolean;
 }
 
 // Lazy load the PDF export module only when needed

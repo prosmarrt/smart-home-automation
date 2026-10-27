@@ -111,6 +111,7 @@ interface PDFExportOptions {
   includeSmartSystemsLogo?: boolean;
   isInvoice?: boolean;
   categoryLabels?: Record<string, string>;
+  openInNewTab?: boolean;
 }
 
 /**
@@ -1090,5 +1091,12 @@ export async function exportToPDF({
 
   const documentType = isInvoice ? 'Invoice' : 'Quotation';
   const fileName = `${documentType}_${clientInfo?.client_name?.replace(/\s+/g, '_') || 'Client'}_${new Date().toISOString().split('T')[0]}.pdf`;
-  doc.save(fileName);
+  if (openInNewTab) {
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+    setTimeout(() => URL.revokeObjectURL(pdfUrl), 60_000);
+  } else {
+    doc.save(fileName);
+  }
 }
