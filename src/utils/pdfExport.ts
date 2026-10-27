@@ -112,6 +112,7 @@ interface PDFExportOptions {
   isInvoice?: boolean;
   categoryLabels?: Record<string, string>;
   openInNewTab?: boolean;
+  targetWindow?: Window | null;
 }
 
 /**
@@ -1094,7 +1095,8 @@ export async function exportToPDF({
   if (openInNewTab) {
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+    const target = targetWindow || window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+    if (target) target.location.href = pdfUrl;
     setTimeout(() => URL.revokeObjectURL(pdfUrl), 60_000);
   } else {
     doc.save(fileName);

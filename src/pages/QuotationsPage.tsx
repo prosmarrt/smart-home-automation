@@ -85,6 +85,11 @@ export default function QuotationsPage() {
   };
 
   const handleViewInvoicePDF = async (quotation: Quotation) => {
+    const pdfWindow = window.open("", "_blank");
+    if (!pdfWindow) {
+      toast({ title: "PDF failed", description: "Please allow pop-ups for this site.", variant: "destructive" });
+      return;
+    }
     try {
       const [fullQuotation, payments] = await Promise.all([
         quotationsApi.getById(quotation.id),
@@ -124,6 +129,7 @@ export default function QuotationsPage() {
         isInvoice: true,
         categoryLabels,
         openInNewTab: true,
+        targetWindow: pdfWindow,
       });
     } catch (error) {
       console.error('[InvoicePDF] Failed:', error);
