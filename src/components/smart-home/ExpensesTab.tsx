@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { expensesApi, expenseCategoriesApi } from '@/db/api';
+import { exportExpensesToExcel } from '@/utils/excelExport';
 import type { Expense, ExpenseCategory } from '@/db/api';
 import MonthlyExpensesChart from '@/components/smart-home/MonthlyExpensesChart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -345,6 +346,7 @@ export default function ExpensesTab({ onTotalChange, isAdmin }: Props) {
         )}
 
         <div className="ml-auto flex items-center gap-2">
+          <Button variant="outline" size="sm" className="h-8 gap-1.5" onClick={() => exportExpensesToExcel(filteredExpenses)}>Export Excel</Button>
           {isAdmin && (
             <Button size="sm" className="h-8 gap-1.5" onClick={openAddExpense}>
               <Plus className="h-3.5 w-3.5" />

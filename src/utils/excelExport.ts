@@ -185,3 +185,46 @@ export function exportDevicesToExcel({
   const timestamp = new Date().toISOString().split('T')[0];
   XLSX.writeFile(wb, `Smart_Home_Inventory_${timestamp}.xlsx`);
 }
+export function exportExpensesToExcel(expenses: any[]) {
+  const exportData = expenses.map(expense => ({
+    'Expense': expense.name,
+    'Category': expense.expense_categories?.name ?? 'Uncategorized',
+    'Date': expense.expense_date,
+    'Vendor': expense.vendor || '',
+    'Amount (EGP)': Number(expense.amount),
+    'Notes': expense.notes || '',
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(exportData);
+
+  ws['!cols'] = [
+    { wch: 30 },
+    { wch: 25 },
+    { wch: 15 },
+    { wch: 25 },
+    { wch: 18 },
+    { wch: 45 },
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Expenses');
+
+  const summaryData = [
+    {
+      'Metric': 'Total Expenses',
+      'Value': expenses.length,
+    },
+    {
+      'Metric': 'Total Amount (EGP)',
+      'Value': expenses.reduce((sum, expense) => sum + Number(expense.amount), 0),
+    },
+  ];
+
+  const wsSummary = XLSX.utils.json_to_sheet(summaryData);
+  wsSummary['!cols'] = [{ wch: 25 }, { wch: 20 }];
+  XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
+
+  const timestamp = new Date().toISOString().split('T')[0];
+  XLSX.writeFile(wb, `Smart_Home_Expenses_${timestamp}.xlsx`);
+}
+
