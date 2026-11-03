@@ -228,3 +228,238 @@ export function exportExpensesToExcel(expenses: any[]) {
   XLSX.writeFile(wb, `Smart_Home_Expenses_${timestamp}.xlsx`);
 }
 
+
+
+// ── Analytics and Financial Reports ──────────────────────────────
+
+function getQuotationCost(q: any): number {
+  if (!Array.isArray(q.devices_data)) return 0;
+  return q.devices_data.reduce((sum: number, device: any) => {
+    return sum + Number(device.cost_price ?? 0) * Number(device.quantity ?? 1);
+  }, 0);
+}
+
+function getRevenueQuotations(quotations: any[]): any[] {
+  return quotations.filter(q =>
+    q.status === 'Invoiced' || q.status === 'Partially Paid'
+  );
+}
+
+function prepareReportSheet(
+  wb: XLSX.WorkBook,
+  name: string,
+  data: any[],
+  widths: number[],
+  currencyColumns: string[] = []
+) {
+  const ws = XLSX.utils.json_to_sheet(data);
+  ws['!cols'] = widths.map(wch => ({ wch }));
+  ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+
+  if (ws['!ref']) {
+    ws['!autofilter'] = { ref: ws['!ref'] };
+  }
+
+  const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+  for (let col = range.s.c; col <= range.e.c; col++) {
+    const header = String(ws[XLSX.utils.encode_cell({ r: 0, c: col })]?.v ?? '');
+    if (currencyColumns.includes(header)) {
+      for (let row = 1; row <= range.e.r; row++) {
+        const cell = ws[XLSX.utils.encode_cell({ r: row, c: col })];
+        if (ws[cell] && typeof ws[cell].v === 'number') {
+          ws[cell].z = '#,##0.00 "EGP"';
+        }
+      }
+    }
+  }
+
+  XLSX.utils.book_append_sheet(wb, ws, name);
+  return ws;
+}
+
+function buildFinancialSummary(quotations: any[], totalExpenses: number) {
+  const revenueQuotations = getRevenueQuotations(quotations);
+  const revenue = revenueQuotations.reduce(
+    (sum, q) => sum + Number(q.total_amount ?? 0), 0
+  );
+  const directCost = revenueQuotations.reduce(
+    (sum, q) => sum + getQuotationCost(q), 0
+  );
+  const grossProfit = revenue - directCost;
+  const netProfit = grossProfit - totalExpenses;
+
+  return {
+    revenue,
+    directCost,
+    grossProfit,
+    totalExpenses,
+    netProfit,
+    grossMargin: revenue ? grossProfit / revenue : 0,
+    netMargin: revenue ? netProfit / revenue : 0,
+    revenueQuotations,
+  };
+}
+
+function addProfitLossSheet(
+  wb: XLSX.WorkBook,
+  quotations: any[],
+  totalExpenses: number
+) {
+  const s = buildFinancialSummary(quotations, totalExpenses);
+
+  const rows = [
+    { Metric: 'Gross Revenue', 'Amount (EGP)': s.revenue },
+    { Metric: 'Direct Cost / COGS', 'Amount (EGP)': s.directCost },
+    { Metric: 'Gross Profit', 'Amount (EGP)': s.grossProfit },
+    { Metric: 'Operating Expenses', 'Amount (EGP)': s.totalExpenses },
+    { Metric: 'Net Operating Profit', 'Amount (EGP)': s.netProfit },
+    { Metric: 'Gross Margin', 'Amount (EGP)': s.grossMargin, Type: 'Percentage' },
+    { Metric: 'Net Margin', 'Amount (EGP)': s.netMargin, Type: 'Percentage' },
+    { Metric: 'Revenue Quotations', 'Amount (EGP)': s.revenueQuotations.length, Type: 'Count' },
+    { Metric: 'All Quotations', 'Amount (EGP)': quotations.length, Type: 'Count' },
+  ];
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{ wch: 30 }, { wch: 22 }, { wch: 16 }];
+  ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+
+  for (let row = 1; row <= 5; row++) {
+    const cell = 'B' + (row + 1);
+    if (ws[cell]) ws[cell].z = '#,##0.00 "EGP"';
+  }
+
+  ['B7', 'B8'].forEach(cell => {
+    if (ws[cell]) ws[cell].z = '0.00%';
+  });
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Profit & Loss');
+}
+
+function addRevenueStatusSheet(wb: XLSX.WorkBook, quotations: any[]) {
+  const statuses = [
+    'Invoiced', 'Partially Paid', 'Fully Paid',
+    'Approved', 'Pipeline', 'Declined', 'Draft'
+  ];
+
+  const rows = statuses.map(status => {
+    const list = quotations.filter(q => q.status === status);
+    return {
+      Status: status,
+      'Quotation Count': list.length,
+      'Total Value (EGP)': list.reduce(
+        (sum, q) => sum + Number(q.total_amount ?? 0), 0
+      ),
+      'Direct Cost (EGP)': list.reduce(
+        (sum, q) => sum + getQuotationCost(q), 0
+      ),
+    };
+  });
+
+  prepareReportSheet(
+    wb, 'Revenue by Status', rows, [22, 18, 23, 23],
+    ['Total Value (EGP)', 'Direct Cost (EGP)']
+  );
+}
+
+function addQuotationsSheet(wb: XLSX.WorkBook, quotations: any[]) {
+  const rows = quotations.map(q => {
+    const cost = getQuotationCost(q);
+    const revenue = Number(q.total_amount ?? 0);
+
+    return {
+      'Project Code': q.project_code ?? '',
+      'Invoice Number': q.invoice_number ?? '',
+      Client: q.client_name ?? '',
+      Status: q.status ?? '',
+      'Revenue (EGP)': revenue,
+      'Direct Cost (EGP)': cost,
+      'Gross Profit (EGP)': revenue - cost,
+      'Paid (EGP)': Number(q.total_paid ?? 0),
+      'Remaining (EGP)': Number(q.remaining_balance ?? 0),
+      'Created Date': q.created_at
+        ? String(q.created_at).slice(0, 10) : '',
+    };
+  });
+
+  prepareReportSheet(
+    wb, 'Quotations', rows,
+    [18, 20, 28, 20, 20, 20, 20, 18, 20, 16],
+    ['Revenue (EGP)', 'Direct Cost (EGP)', 'Gross Profit (EGP)', 'Paid (EGP)', 'Remaining (EGP)']
+  );
+}
+
+function addFeeBreakdownSheet(wb: XLSX.WorkBook, quotations: any[]) {
+  const eligible = getRevenueQuotations(quotations);
+
+  const rows = [
+    {
+      Fee: 'Commissioning',
+      'Amount (EGP)': eligible.reduce((s, q) => s + Number(q.commissioning_price ?? 0), 0),
+    },
+    {
+      Fee: 'Visit',
+      'Amount (EGP)': eligible.reduce((s, q) => s + Number(q.visit_price ?? 0), 0),
+    },
+    {
+      Fee: 'Installation',
+      'Amount (EGP)': eligible.reduce((s, q) => s + Number(q.installation_price ?? 0), 0),
+    },
+  ];
+
+  prepareReportSheet(wb, 'Fee Breakdown', rows, [25, 22], ['Amount (EGP)']);
+}
+
+function addExpensesSheet(wb: XLSX.WorkBook, expenses: any[]) {
+  const rows = expenses.map(e => ({
+    Expense: e.name ?? '',
+    Category: e.expense_categories?.name ?? 'Uncategorized',
+    Date: e.expense_date ?? '',
+    Vendor: e.vendor ?? '',
+    'Amount (EGP)': Number(e.amount ?? 0),
+    Notes: e.notes ?? '',
+  }));
+
+  prepareReportSheet(
+    wb, 'Expenses', rows, [30, 24, 16, 25, 20, 45],
+    ['Amount (EGP)']
+  );
+}
+
+export function exportAnalyticsToExcel({
+  quotations,
+  totalExpenses = 0,
+}: {
+  quotations: any[];
+  totalExpenses?: number;
+}) {
+  const wb = XLSX.utils.book_new();
+
+  addProfitLossSheet(wb, quotations, totalExpenses);
+  addRevenueStatusSheet(wb, quotations);
+  addQuotationsSheet(wb, quotations);
+  addFeeBreakdownSheet(wb, quotations);
+
+  const timestamp = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, 'Smart_Home_Analytics_' + timestamp + '.xlsx');
+}
+
+export function exportFullFinancialReportToExcel({
+  quotations,
+  totalExpenses = 0,
+  expenses = [],
+}: {
+  quotations: any[];
+  totalExpenses?: number;
+  expenses?: any[];
+}) {
+  const wb = XLSX.utils.book_new();
+
+  addProfitLossSheet(wb, quotations, totalExpenses);
+  addRevenueStatusSheet(wb, quotations);
+  addQuotationsSheet(wb, quotations);
+  addExpensesSheet(wb, expenses);
+  addFeeBreakdownSheet(wb, quotations);
+
+  const timestamp = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, 'Smart_Home_Full_Financial_Report_' + timestamp + '.xlsx');
+}

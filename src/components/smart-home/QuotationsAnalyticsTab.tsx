@@ -1,7 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Quotation } from '@/types/types';
 import { REVENUE_STATUSES } from '@/types/types';
+import { expensesApi } from '@/db/api';
+import { exportAnalyticsToExcel, exportFullFinancialReportToExcel } from '@/utils/excelExport';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -225,6 +227,25 @@ export default function QuotationsAnalyticsTab({ quotations, totalExpenses = 0 }
         <strong>Approved</strong> (pricing confirmed, not yet invoiced),{' '}
         <strong>Pipeline</strong> (in progress, changed from Approved), and{' '}
         <strong>Declined</strong> (rejected) are excluded from all revenue reporting.
+      </div>
+
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => exportAnalyticsToExcel({ quotations, totalExpenses })}>
+          <BarChart2 className="h-4 w-4" />
+          Export Analytics
+        </Button>
+        <Button size="sm" className="gap-1.5" onClick={async () => {
+          try {
+            const expenses = await expensesApi.list();
+            const freshTotalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+            exportFullFinancialReportToExcel({ quotations, totalExpenses: freshTotalExpenses, expenses });
+          } catch (error) {
+            console.error('Failed to load expenses for financial report:', error);
+          }
+        }}>
+          <DollarSign className="h-4 w-4" />
+          Full Financial Report
+        </Button>
       </div>
 
       {/* ── KPI row ───────────────────────────────────────────────────────── */}
