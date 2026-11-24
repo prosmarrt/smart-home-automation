@@ -33,6 +33,7 @@ import { comparePrices, type PriceChange } from '@/utils/priceComparison';
 import QuotationPriceUpdatePanel from '@/components/smart-home/QuotationPriceUpdatePanel';
 import CostAnalysisTab from '@/components/smart-home/CostAnalysisTab';
 import prosmartLogoImage from '/prosmart-logo.png';
+import { printPaymentReceipt } from '@/utils/paymentReceipt';
 
 export default function QuotationViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -2046,6 +2047,15 @@ export default function QuotationViewPage() {
                         {quotation?.status !== 'Invoiced' && (
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => quotation && printPaymentReceipt(quotation, payment, payments)}
+                                title="Print cash receipt / طباعة وصل استلام"
+                                disabled={payment.amount < 0}
+                              >
+                                <Printer className="h-4 w-4" />
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
