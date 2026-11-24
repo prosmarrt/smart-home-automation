@@ -1,194 +1,216 @@
-# Smart Home Automation Application
+<div align="center">
 
-A comprehensive smart home management system for managing rooms, devices, and automation protocols with quotation generation and backup capabilities.
+<img src="public/prosmart-logo.png" alt="ProSmart Logo" width="160"/>
 
-## Features
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:428bca,100:1a2a6c&height=220&section=header&text=ProSmart%20Smart%20Home&fontSize=46&fontColor=ffffff&animation=fadeIn&fontAlignY=36&desc=Automation%20%26%20Quotation%20Management%20System&descAlignY=58&descSize=18" alt="ProSmart Banner" width="100%"/>
 
-- **Room Management**: Add, edit, and delete rooms with device organization
-- **Device Management**: Support for switches, sensors, cameras, networking equipment, and more
-- **Protocol Support**: Zigbee, Matter, Wi-Fi, Wired, LAN, and KNX protocols
-- **Quotation System**: Generate detailed quotations with pricing, VAT, and discounts
-- **Payment Tracking**: Record and manage payments with multiple payment methods
-- **Google Sheets Backup**: Automatic backup of quotation data to Google Sheets
-- **Multi-language Support**: English and Arabic language support
-- **User Management**: Admin and user roles with approval system
-- **Version Control**: Track quotation changes with version history
+### 🏠 نظام إدارة وتسعير مشاريع المنازل الذكية &nbsp;|&nbsp; Smart Home Projects & Quotation System
 
-## Technology Stack
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Open-428bca?style=for-the-badge)](https://prosmarrt.github.io/smart-home-automation/)
+![Status](https://img.shields.io/badge/Status-Active-28a745?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.1-blue?style=for-the-badge)
+![Rights](https://img.shields.io/badge/©-All_Rights_Reserved-red?style=for-the-badge)
 
-- **Frontend**: React 18 + TypeScript + Vite
-- **UI Framework**: shadcn/ui + Tailwind CSS
-- **Backend**: Supabase (PostgreSQL + Edge Functions)
-- **Authentication**: Supabase Auth
-- **Storage**: Supabase Storage
-- **Backup**: Google Sheets API integration
+**[🇬🇧 English](#en) &nbsp;•&nbsp; [🇪🇬 العربية](#ar)**
 
-## Getting Started
+</div>
 
-### Prerequisites
+---
 
-- Node.js 18+ and pnpm
-- Supabase account
-- Google Cloud Console account (for Google Sheets backup)
+## 👨‍💻 Developer & Owner — المطوّر وصاحب المشروع
 
-### Installation
+<div align="center">
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd app-85wlczelkwsh
-```
+### © MOHAMED IBRAHIM
 
-2. Install dependencies:
-```bash
-pnpm install
-```
+| | |
+|:--|:--|
+| 📞 **Phone / الهاتف** | [`01122822813`](tel:+201122822813) |
+| ✈️ **Telegram / تليجرام** | [@DIV_MUHAMED](https://t.me/DIV_MUHAMED) |
+| 📸 **Instagram / انستجرام** | [mhamed_shsya](https://instagram.com/mhamed_shsya) |
+| 💬 **WhatsApp / واتساب** | [@mhamedibrahim](https://wa.me/201122822813) |
 
-3. Set up environment variables:
-Create a `.env` file with:
-```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
-```
+**Designed, developed and owned by MOHAMED IBRAHIM**
+**تصميم وتطوير وملكية: محمد إبراهيم**
 
-4. Run database migrations:
-```bash
-# Migrations are automatically applied via Supabase
-```
+</div>
 
-5. Start development server:
-```bash
-pnpm dev
-```
+---
 
-## Google Sheets Backup Setup
+<a id="en"></a>
 
-### 1. Google Cloud Console Setup
+# 🇬🇧 English
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing one
-3. Enable the following APIs:
-   - Google Sheets API
-   - Google Drive API
+## 📖 About the Project
 
-### 2. Create OAuth 2.0 Credentials
+**ProSmart** is a professional web system built for smart-home and low-current contractors. It manages the full project cycle in one place: designing rooms and devices, pricing with VAT and discounts, producing client quotations, tracking payments, issuing cash receipts, and analysing costs and expenses.
 
-1. Navigate to **APIs & Services > Credentials**
-2. Click **Create Credentials > OAuth client ID**
-3. Select **Web application**
-4. Add authorized redirect URIs:
-   ```
-   https://your-project.supabase.co/functions/v1/google-oauth-callback
-   ```
-5. Save the **Client ID** and **Client Secret**
+It replaces scattered spreadsheets and manual paperwork with a fast, organized, bilingual (English / Arabic) workflow.
 
-### 3. Configure Supabase Secrets
+## ✨ Key Features
 
-Add the following secrets to your Supabase project:
+| | Feature | Description |
+|:-:|:--|:--|
+| 🏠 | **Rooms & Devices** | Organize every project by rooms and devices (switches, sensors, cameras, networking and more) |
+| 📡 | **Multi-Protocol** | Zigbee, Matter, Wi-Fi, Wired, LAN and KNX |
+| 🧾 | **Quotations** | Detailed quotations with pricing, VAT, discounts and version history |
+| 💵 | **Payments Tracking** | Record payments by method, with totals and remaining balance |
+| 🧷 | **Cash Receipts** *(new)* | Print a receipt per payment: client name, operation number, amount paid and remaining balance |
+| 📄 | **PDF & Print** | Export quotations and print price lists |
+| 💰 | **Pricing Management** | Price lists, price history and price approval workflow |
+| 📊 | **Analytics** | Cost analysis, expenses and monthly charts |
+| 📥 | **Excel Import** | Import devices and data from Excel sheets |
+| ☁️ | **Google Sheets Backup** | Automatic backup of quotation data |
+| 👥 | **Users & Roles** | Admin / User roles with an approval system |
+| 🌍 | **Bilingual** | English and Arabic support |
 
-```bash
-GOOGLE_CLIENT_ID=your_client_id
-GOOGLE_CLIENT_SECRET=your_client_secret
-GOOGLE_REDIRECT_URI=https://your-project.supabase.co/functions/v1/google-oauth-callback
-```
+## 🛠️ Tech Stack
 
-### 4. Using Google Sheets Backup
+![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=githubpages&logoColor=white)
 
-1. Navigate to any quotation view page
-2. Click on the **Backup** tab
-3. Click **Connect Google Sheets**
-4. Authorize the application
-5. Click **Backup Now** to backup the quotation
+- **Frontend:** React 18, TypeScript, Vite, React Router
+- **UI:** Tailwind CSS, shadcn/ui, Recharts
+- **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
+- **Documents:** jsPDF, SheetJS (Excel)
+- **Deployment:** GitHub Actions → GitHub Pages
 
-Backups are stored in a spreadsheet named "Smart Home Quotations Backup" in your Google Drive.
+## 🖥️ System Sections
 
-## Project Structure
+| Section | What it does |
+|:--|:--|
+| 🔐 **Login & Signup** | Secure sign-in with admin approval for new users |
+| 🏡 **Home / Quotations** | List, search and manage all client quotations |
+| 🧱 **Project Builder** | Rooms, devices, templates and commissioning & installation |
+| 🧮 **Pricing & Summary** | Totals, VAT, discounts and cost breakdown |
+| 💵 **Payments** | Payment history, balance and cash receipts |
+| 📈 **Analytics & Expenses** | Cost analysis, monthly expenses and charts |
+| 🛡️ **Admin Panel** | Users, approvals and system settings |
 
-```
-src/
-├── components/
-│   ├── auth/              # Authentication components
-│   ├── backup/            # Backup components (Google Sheets)
-│   ├── smart-home/        # Smart home feature components
-│   └── ui/                # shadcn/ui components
-├── db/
-│   ├── api.ts            # Database API functions
-│   └── supabase.ts       # Supabase client
-├── pages/                # Page components
-├── types/                # TypeScript type definitions
-├── utils/                # Utility functions
-└── i18n/                 # Internationalization
+## 📌 Project Status & Updates
 
-supabase/
-├── functions/            # Edge Functions
-│   ├── google-oauth-init/
-│   ├── google-oauth-callback/
-│   └── backup-to-sheets/
-└── migrations/           # Database migrations
-```
+| Item | Details |
+|:--|:--|
+| **Status** | 🟢 Active development |
+| **Version** | 1.1 |
+| **Last update** | November 2026 |
 
-## Database Schema
+**Latest updates**
+- ✅ **Cash receipt** for every payment (client name, operation number, paid amount, remaining balance), printable or savable as PDF
+- ✅ Automatic deployment to GitHub Pages
 
-Key tables:
-- `profiles`: User profiles with roles
-- `rooms`: Room definitions
-- `devices`: Device configurations
-- `quotations`: Quotation records
-- `payments`: Payment tracking
-- `google_oauth_tokens`: OAuth tokens for Google Sheets
-- `backup_history`: Backup operation logs
+## ⚖️ Copyright & Ownership
 
-## Security
+**© 2026 MOHAMED IBRAHIM — All Rights Reserved.**
 
-- Row Level Security (RLS) enabled on all tables
-- OAuth 2.0 for Google Sheets integration
-- Encrypted token storage
-- User-based access control
-- Admin approval system
+This project, including its source code, design, structure, logic and documentation, is the exclusive property of **MOHAMED IBRAHIM**.
 
-## Deployment
+- ❌ Copying, redistributing, reselling or republishing it, in whole or in part, is **not allowed** without written permission from the owner.
+- ❌ **Claiming this project, or any part of it, as your own work, or removing or altering the owner's name and credits, is strictly prohibited.**
+- ✅ Any permitted use must keep this notice and the owner's credits visible.
 
-### Supabase Edge Functions
+Third-party libraries used in the project remain under their own licenses.
 
-Deploy Edge Functions:
-```bash
-supabase functions deploy google-oauth-init
-supabase functions deploy google-oauth-callback
-supabase functions deploy backup-to-sheets
-```
+For permissions or business inquiries, contact the owner using the details at the top of this page.
 
-### Frontend
+---
 
-Build for production:
-```bash
-pnpm build
-```
+<a id="ar"></a>
 
-Deploy to your hosting provider (Vercel, Netlify, etc.)
+<div dir="rtl" align="right">
 
-## Backup Strategy
+# 🇪🇬 العربية
 
-### Automatic Backups
-- Event-driven: Backup on quotation create/update
-- Scheduled: Daily/hourly sync (configurable)
+## 📖 نبذة عن المشروع
 
-### Manual Backups
-- On-demand backup from quotation view page
-- Backup history tracking
-- Error logging and retry mechanism
+**ProSmart** نظام ويب احترافي موجّه لمقاولي ومنفّذي المنازل الذكية والتيار الخفيف. بيدير دورة المشروع كلها في مكان واحد: تصميم الغرف والأجهزة، التسعير مع الضريبة والخصومات، إصدار عروض الأسعار للعملاء، متابعة المدفوعات، إصدار وصولات الاستلام النقدية، وتحليل التكاليف والمصروفات.
 
-## Contributing
+بيحلّ محل جداول الإكسيل المتفرقة والأوراق اليدوية بعمل سريع ومنظم وثنائي اللغة (عربي / إنجليزي).
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+## ✨ مميزات النظام
 
-## License
+| | الميزة | الوصف |
+|:-:|:--|:--|
+| 🏠 | **الغرف والأجهزة** | تنظيم كل مشروع بالغرف والأجهزة (مفاتيح، حساسات، كاميرات، شبكات وغيرها) |
+| 📡 | **دعم البروتوكولات** | Zigbee وMatter وWi-Fi وWired وLAN وKNX |
+| 🧾 | **عروض الأسعار** | عروض تفصيلية بالأسعار والضريبة والخصومات وسجل الإصدارات |
+| 💵 | **متابعة المدفوعات** | تسجيل الدفعات بطرق الدفع المختلفة مع الإجمالي والمتبقي |
+| 🧷 | **وصل استلام نقدية** *(جديد)* | طباعة وصل لكل دفعة: اسم العميل، رقم العملية، المبلغ المدفوع والمتبقي |
+| 📄 | **PDF والطباعة** | تصدير عروض الأسعار وطباعة قوائم الأسعار |
+| 💰 | **إدارة الأسعار** | قوائم الأسعار وسجل التغييرات ونظام اعتماد الأسعار |
+| 📊 | **التحليلات** | تحليل التكاليف والمصروفات ورسوم شهرية |
+| 📥 | **استيراد Excel** | استيراد الأجهزة والبيانات من ملفات إكسيل |
+| ☁️ | **نسخ احتياطي Google Sheets** | نسخ احتياطي تلقائي لبيانات العروض |
+| 👥 | **المستخدمون والصلاحيات** | أدوار (مدير / مستخدم) مع نظام موافقة |
+| 🌍 | **ثنائي اللغة** | دعم العربية والإنجليزية |
 
-Copyright © 2026 Smart Home Automation Application
+## 🛠️ التقنيات المستخدمة
 
-## Support
+![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=githubpages&logoColor=white)
 
-For issues and questions, please create an issue in the repository.
+- **الواجهة:** React 18 وTypeScript وVite وReact Router
+- **التصميم:** Tailwind CSS وshadcn/ui وRecharts
+- **الخادم:** Supabase (قاعدة PostgreSQL والمصادقة والتخزين والـ Edge Functions)
+- **المستندات:** jsPDF وSheetJS (إكسيل)
+- **النشر:** GitHub Actions ← GitHub Pages
+
+## 🖥️ أقسام النظام
+
+| القسم | وظيفته |
+|:--|:--|
+| 🔐 **تسجيل الدخول والتسجيل** | دخول آمن مع موافقة المدير على المستخدمين الجدد |
+| 🏡 **الرئيسية / العروض** | عرض وبحث وإدارة كل عروض أسعار العملاء |
+| 🧱 **بناء المشروع** | الغرف والأجهزة والقوالب والتشغيل والتركيب |
+| 🧮 **التسعير والملخص** | الإجماليات والضريبة والخصومات وتفصيل التكلفة |
+| 💵 **المدفوعات** | سجل الدفعات والمتبقي ووصلات الاستلام |
+| 📈 **التحليلات والمصروفات** | تحليل التكاليف والمصروفات الشهرية والرسوم البيانية |
+| 🛡️ **لوحة الإدارة** | المستخدمون والموافقات وإعدادات النظام |
+
+## 📌 حالة المشروع والتحديثات
+
+| البند | التفاصيل |
+|:--|:--|
+| **الحالة** | 🟢 قيد التطوير النشط |
+| **الإصدار** | 1.1 |
+| **آخر تحديث** | نوفمبر 2026 |
+
+**آخر التحديثات**
+- ✅ **وصل استلام نقدية** لكل دفعة (اسم العميل، رقم العملية، المبلغ المدفوع، المتبقي) قابل للطباعة أو الحفظ PDF
+- ✅ نشر تلقائي على GitHub Pages
+
+## ⚖️ حقوق الملكية
+
+**© 2026 محمد إبراهيم (MOHAMED IBRAHIM) — جميع الحقوق محفوظة.**
+
+هذا المشروع بما فيه الكود المصدري والتصميم والهيكل والمنطق والتوثيق ملك حصري لـ **محمد إبراهيم**.
+
+- ❌ يُمنع نسخه أو إعادة توزيعه أو بيعه أو إعادة نشره كليًا أو جزئيًا دون إذن كتابي من المالك.
+- ❌ **يُمنع منعًا باتًا نسب المشروع أو أي جزء منه لغير صاحبه، أو إزالة اسم المالك وبياناته أو تعديلها.**
+- ✅ أي استخدام مسموح به يجب أن يُبقي هذا الإشعار وبيانات المالك ظاهرة.
+
+المكتبات الخارجية المستخدمة في المشروع تظل تحت تراخيصها الخاصة.
+
+للاستئذان أو التعاقد تواصل مع المالك عبر البيانات الموجودة أعلى الصفحة.
+
+</div>
+
+---
+
+<div align="center">
+
+**© 2026 MOHAMED IBRAHIM — All Rights Reserved · جميع الحقوق محفوظة**
+
+</div>
