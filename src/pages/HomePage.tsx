@@ -16,6 +16,7 @@ import { quotationsApi, clientInfoApi, commissioningInstallationApi } from '@/db
 import { calculateQuotationTotals } from '@/utils/quotationCalculations';
 import { fetchAndComputeICUTotal } from '@/hooks/useICUCalculator';
 import type { Room, Device, Quotation } from '@/types/types';
+import SurveyImportButton from '@/components/smart-home/SurveyImportButton';
 import DeviceManager from '@/components/smart-home/DeviceManager';
 import SummaryDashboard from '@/components/smart-home/SummaryDashboard';
 import QuotationSummary from '@/components/smart-home/QuotationSummary';
@@ -904,6 +905,14 @@ export default function HomePage() {
           {/* Overview & Devices Tab */}
           <TabsContent value="overview" className="space-y-4 sm:space-y-8">
             <ClientInfoSection ref={clientInfoRef} isEditMode={!!editingQuotation} />
+            {!editQuotationId && (
+              <div className="mt-3 flex justify-end">
+                <SurveyImportButton
+                  clientInfoRef={clientInfoRef}
+                  onImported={(r, d) => { setRooms(prev => [...prev, ...r]); setDevices(prev => [...prev, ...d]); }}
+                />
+              </div>
+            )}
             <SummaryDashboard devices={devices} rooms={rooms} />
             <DeviceManager 
               rooms={rooms} 
